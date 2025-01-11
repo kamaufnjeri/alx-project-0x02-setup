@@ -5,24 +5,9 @@ import { UserProps } from "@/interfaces";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const Users: React.FC = () => {
-    const [users, setUsers] = useState<UserProps[]>([]);
+const Users: React.FC<{ users: UserProps[]}> = ({ users }) => {
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-          try {
-            const response = await axios.get<UserProps[]>(
-              "https://jsonplaceholder.typicode.com/users"
-            );
-            console.log(response.data)
-            setUsers(response.data); 
-          } catch (error) {
-            console.error("Error fetching users:", error);
-          } 
-        };
     
-        fetchUsers();
-      }, []);
     
   return (
     <div>
@@ -40,5 +25,15 @@ const Users: React.FC = () => {
   );
 };
 
+export async function getStaticProps() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users")
+  const users = await response.json()
+
+  return {
+    props: {
+      users
+    }
+  }
+}
 
 export default Users;

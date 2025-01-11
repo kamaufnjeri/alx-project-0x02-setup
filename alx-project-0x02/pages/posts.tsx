@@ -5,23 +5,9 @@ import { Post } from "@/interfaces";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const Posts: React.FC = () => {
-    const [posts, setPosts] = useState<Post[]>([]);
+const Posts: React.FC<{ posts: Post[]}> = ({ posts }) => {
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-          try {
-            const response = await axios.get<Post[]>(
-              "https://jsonplaceholder.typicode.com/posts"
-            );
-            setPosts(response.data); 
-          } catch (error) {
-            console.error("Error fetching posts:", error);
-          } 
-        };
     
-        fetchPosts();
-      }, []);
     
   return (
     <div>
@@ -39,5 +25,14 @@ const Posts: React.FC = () => {
   );
 };
 
+export async function getStaticProps() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts")
+  const posts = await response.json()
 
+  return {
+    props: {
+      posts
+    }
+  }
+}
 export default Posts;
